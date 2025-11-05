@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ColDef, GridApi, CellClassParams, ICellRendererParams, ValueParserParams } from 'ag-grid-community';
 import { CombinedStyleService } from '../combined-style/combined-style-service';
+import { GridOptions, RowSelectionOptions } from 'ag-grid-community';
 
 @Component({
   selector: 'app-combined-style',
@@ -107,6 +108,10 @@ export class CombinedStyle implements OnInit {
     flex: 1,
     minWidth: 150,
     resizable: true,
+  };
+
+  rowSelection: RowSelectionOptions | "single" | "multiple" = {
+    mode: "multiRow",
   };
 
   gridOptions = {
