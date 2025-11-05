@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "mulalo": {
+    "Codevolution": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -32,10 +32,14 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "glob": "**/*",
+                "input": "src/assets",
+                "output": "/assets"
               }
             ],
             "styles": [
-              
               "src/styles.css"
             ]
           },
@@ -67,10 +71,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "mulalo:build:production"
+              "buildTarget": "Codevolution:build:production"
             },
             "development": {
-              "buildTarget": "mulalo:build:development"
+              "buildTarget": "Codevolution:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -90,6 +94,11 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "glob": "**/*",
+                "input": "src/assets",
+                "output": "/assets"
               }
             ],
             "styles": [

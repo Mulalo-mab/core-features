@@ -1,0 +1,12 @@
+.first-row-highlight {
+  background-color: #2244CC44 !important;
+}
+
+
+.drop-col {
+  padding-left: 10px;
+  box-sizing: border-box;
+  flex: 1 1 0px;
+  display: flex;
+  flex-direction: column;
+}

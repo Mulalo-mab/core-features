@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AgGridModule } from 'ag-grid-angular';
-import { ColDef } from 'ag-grid-community';
+import { ColDef, GridApi } from 'ag-grid-community';
 import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
+import { ColumnFeatureService } from '../column-feature/column-feature-service';
+
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -11,48 +13,171 @@ ModuleRegistry.registerModules([AllCommunityModule]);
   templateUrl: './column-feature.html',
   styleUrl: './column-feature.css',
 })
-export class ColumnFeature {
-
-  rowData: any[] = [
-    { athlete: 'Michael Phelps', age: 23, country: 'United States', year: 2008, sport: 'Swimming', gold: 8, silver: 0, bronze: 0, total: 8 },
-    { athlete: 'Michael Phelps', age: 27, country: 'United States', year: 2012, sport: 'Swimming', gold: 4, silver: 2, bronze: 0, total: 6 },
-    { athlete: 'Michael Phelps', age: 31, country: 'United States', year: 2016, sport: 'Swimming', gold: 5, silver: 1, bronze: 0, total: 6 },
-    { athlete: 'Usain Bolt', age: 22, country: 'Jamaica', year: 2008, sport: 'Athletics', gold: 3, silver: 0, bronze: 0, total: 3 },
-    { athlete: 'Usain Bolt', age: 26, country: 'Jamaica', year: 2012, sport: 'Athletics', gold: 3, silver: 0, bronze: 0, total: 3 },
-    { athlete: 'Usain Bolt', age: 30, country: 'Jamaica', year: 2016, sport: 'Athletics', gold: 3, silver: 0, bronze: 0, total: 3 },
-    { athlete: 'Simone Biles', age: 19, country: 'United States', year: 2016, sport: 'Gymnastics', gold: 4, silver: 0, bronze: 1, total: 5 },
-    { athlete: 'Simone Biles', age: 24, country: 'United States', year: 2020, sport: 'Gymnastics', gold: 2, silver: 0, bronze: 2, total: 4 },
-    { athlete: 'Katie Ledecky', age: 19, country: 'United States', year: 2016, sport: 'Swimming', gold: 4, silver: 1, bronze: 0, total: 5 },
-    { athlete: 'Katie Ledecky', age: 23, country: 'United States', year: 2020, sport: 'Swimming', gold: 2, silver: 2, bronze: 0, total: 4 },
-    { athlete: 'Larisa Latynina', age: 21, country: 'Soviet Union', year: 1956, sport: 'Gymnastics', gold: 4, silver: 1, bronze: 1, total: 6 },
-    { athlete: 'Larisa Latynina', age: 25, country: 'Soviet Union', year: 1960, sport: 'Gymnastics', gold: 3, silver: 2, bronze: 1, total: 6 },
-    { athlete: 'Larisa Latynina', age: 29, country: 'Soviet Union', year: 1964, sport: 'Gymnastics', gold: 2, silver: 2, bronze: 2, total: 6 },
-    { athlete: 'Paavo Nurmi', age: 23, country: 'Finland', year: 1920, sport: 'Athletics', gold: 3, silver: 1, bronze: 0, total: 4 },
-    { athlete: 'Paavo Nurmi', age: 27, country: 'Finland', year: 1924, sport: 'Athletics', gold: 5, silver: 0, bronze: 0, total: 5 },
-    { athlete: 'Paavo Nurmi', age: 31, country: 'Finland', year: 1928, sport: 'Athletics', gold: 1, silver: 2, bronze: 0, total: 3 }
-  ];
+export class ColumnFeature implements OnInit {
+  private gridApi!: GridApi;
+  rowData: any[] = [];
 
   columnDefs: ColDef[] = [
-    { field: 'athlete', sortable: true, filter: true },
-    { field: 'age', sortable: true, filter: true },
-    { field: 'country', sortable: true, filter: true },
-    { field: 'year', sortable: true, filter: true },
-    { field: 'sport', sortable: true, filter: true },
-    { field: 'gold', sortable: true, filter: true },
-    { field: 'silver', sortable: true, filter: true },
-    { field: 'bronze', sortable: true, filter: true },
-    { field: 'total', sortable: true, filter: true }
+    { field: 'athlete', sortable: true, filter: false },
+    { field: 'age', sortable: true, filter: false },
+    { field: 'country', sortable: true, filter: false },
+    { field: 'year', sortable: true, filter: false },
+    { field: 'sport', sortable: true, filter: false },
+    { field: 'gold', sortable: true, filter: false },
+    { field: 'silver', sortable: true, filter: false },
+    { field: 'bronze', sortable: true, filter: false },
+    { field: 'total', sortable: true, filter: false }
   ];
 
   defaultColDef: ColDef = {
     flex: 1,
-    minWidth: 100,
+    minWidth: 150,
     resizable: true,
   };
 
   gridOptions = {
-    theme: 'legacy' as any 
+    theme: 'legacy' as any,
+    onGridReady: (params: any) => this.onGridReady(params)
   };
+
+  constructor(private columnFeatureService: ColumnFeatureService) { }
+
+  ngOnInit(): void {
+   this.loadData();
+    
+  };
+
+  loadData(): void {
+    this.columnFeatureService.getOlympicAthletes().subscribe({
+      next: (data) => {
+        console.log('Data received in component:', data);
+        this.rowData = data;
+        // CRITICAL: Update the grid with the new data
+        if (this.gridApi) {
+          console.log('Setting rowData on gridApi');
+          this.gridApi.setGridOption('rowData', this.rowData);
+        }
+      },
+      error: (error) => {
+        console.error('Error loading data:', error);
+      }
+    });
+  }
+
+  onGridReady(params: any): void {
+    this.gridApi = params.api;
+    console.log('Grid ready, current rowData length:', this.rowData.length);
+
+    // If data is already loaded, set it on the grid
+    if (this.rowData && this.rowData.length > 0) {
+      console.log('Data already loaded, setting on grid');
+      this.gridApi.setGridOption('rowData', this.rowData);
+    } else {
+      console.log('Data not loaded yet, grid will show empty');
+    }
+  }
+  
+  onBtSortOn(): void {
+    this.gridApi.applyColumnState({
+      state: [
+        { colId: "age", sort: "desc" },
+        { colId: "athlete", sort: "asc" },
+      ],
+    });
+  }
+
+  onBtSortOff(): void {
+    this.gridApi.applyColumnState({
+      defaultState: { sort: null }
+    });
+  }
+
+  
+  onBtWidthNarrow(): void {
+    this.gridApi.setColumnWidths([
+      { key: 'athlete', newWidth: 80 },
+      { key: 'country', newWidth: 80 },
+      { key: 'sport', newWidth: 80 }
+    ]);
+  }
+
+  onBtWidthNormal(): void {
+    this.gridApi.setColumnWidths([
+      { key: 'athlete', newWidth: 200 },
+      { key: 'country', newWidth: 150 },
+      { key: 'sport', newWidth: 150 }
+    ]);
+  }
+
  
+  onBtHide(): void {
+    this.gridApi.setColumnsVisible(['age', 'year', 'silver', 'bronze'], false);
+  }
+
+  onBtShow(): void {
+    this.gridApi.setColumnsVisible(['age', 'year', 'silver', 'bronze'], true);
+  }
+
+  
+  onBtReverseOrder() {
+    this.gridApi.applyColumnState({
+      state: [
+        { colId: "athlete" },
+        { colId: "age" },
+        { colId: "country" },
+        { colId: "sport" },
+        { colId: "bronze" },
+        { colId: "silver" },
+        { colId: "gold" },
+      ],
+      applyOrder: true,
+    });
+  }
+
+  onBtNormalOrder() {
+    this.gridApi.applyColumnState({
+      state: [
+        { colId: "athlete" },
+        { colId: "age" },
+        { colId: "country" },
+        { colId: "sport" },
+        { colId: "gold" },
+        { colId: "silver" },
+        { colId: "bronze" },
+      ],
+      applyOrder: true,
+    });
+  }
+
+
+  onBtRowGroupOn(): void {
+    this.columnDefs = this.columnDefs.map(col => {
+      if (col.field === 'country' || col.field === 'sport') {
+        return { ...col, rowGroup: true, hide: true };
+      }
+      return col;
+    });
+    this.gridApi.setGridOption('columnDefs', this.columnDefs);
+  }
+
+  onBtRowGroupOff(): void {
+    this.columnDefs = this.columnDefs.map(col => ({
+      ...col,
+      rowGroup: false,
+      hide: false
+    }));
+    this.gridApi.setGridOption('columnDefs', this.columnDefs);
+  }
+
+  
+  onBtPinnedOn(): void {
+    this.gridApi.setColumnsPinned(['athlete'], 'left');
+    this.gridApi.setColumnsPinned(['total'], 'right');
+  }
+
+  onBtPinnedOff(): void {
+    this.gridApi.setColumnsPinned(['athlete'], null);
+    this.gridApi.setColumnsPinned(['total'], null);
+  }
 
 }
