@@ -23,7 +23,12 @@ export class Edit {
       headerName: 'Names',
       field: 'athlete',
       cellEditor: 'agSelectCellEditor',
-     
+      cellEditorParams: {
+        values: ["Michael Phelps", "Usain Bolt", "Simone Biles", "Katie Ledecky", "Larisa Latynina", "Paavo Nurmi"],
+        valueListGap: 10,
+        valueListMaxHeight: 120,
+        valueListMaxWidth: 120
+      }
     },
    
   ];
