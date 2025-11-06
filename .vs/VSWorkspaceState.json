@@ -1,11 +1,15 @@
 {
   "ExpandedNodes": [
     "",
+    "\\public\\assets",
+    "\\public\\assets\\data",
     "\\src",
     "\\src\\app",
     "\\src\\app\\core-feature",
-    "\\src\\app\\core-feature\\column-feature"
+    "\\src\\app\\core-feature\\column-feature",
+    "\\src\\app\\core-feature\\combined-style",
+    "\\src\\assets\\data"
   ],
-  "SelectedNode": "\\src\\app\\core-feature\\column-feature\\column-feature.html",
+  "SelectedNode": "\\src\\app\\core-feature\\combined-style\\combined-style.css",
   "PreviewInSolutionExplorer": false
 }

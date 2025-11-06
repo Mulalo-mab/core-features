@@ -10,6 +10,9 @@ import { ColumnFeature } from './core-feature/column-feature/column-feature';
 import { ColumnGroup } from './core-feature/column-group/column-group';
 import { SortingComponent } from './core-feature/sorting-component/sorting-component';
 import { CombinedStyle } from './core-feature/combined-style/combined-style';
+import { ExternalDrop } from './core-feature/external-drop/external-drop';
+import { Filter } from './core-feature/filter/filter';
+import { Edit } from './core-feature/edit/edit';
 
 
 @NgModule({
@@ -18,7 +21,10 @@ import { CombinedStyle } from './core-feature/combined-style/combined-style';
     ColumnFeature,
     ColumnGroup,
     SortingComponent,
-    CombinedStyle
+    CombinedStyle,
+    ExternalDrop,
+    Filter,
+    Edit
   ],
   imports: [
     BrowserModule,

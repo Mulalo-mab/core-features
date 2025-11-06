@@ -108,6 +108,7 @@ export class CombinedStyle implements OnInit {
     flex: 1,
     minWidth: 150,
     resizable: true,
+    editable: true,
   };
 
   rowSelection: RowSelectionOptions | "single" | "multiple" = {

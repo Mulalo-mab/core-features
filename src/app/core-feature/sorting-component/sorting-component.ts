@@ -32,9 +32,10 @@ export class SortingComponent {
   ];
 
   //defaultColDef: ColDef = {
-   // flex: 1,
+  //  flex: 1,
   //  minWidth: 150,
   //  resizable: true,
+  //  editable: true,
   //};
 
   gridOptions = {
